@@ -686,20 +686,20 @@ footer p { font-size: 0.8rem; color: var(--light); }
       <p>Tell us about your business and we'll build a solution tailored for you. No technical knowledge needed — we handle everything from start to finish.</p>
       <div class="citems">
         <div class="citem"><div class="cico">📧</div><div class="ctxt"><strong>Email</strong><span><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="0c6f696968687538353e4c6b616d6560226f6361">[email&#160;protected]</a></span></div></div>
-        <div class="citem"><div class="cico">📱</div><div class="ctxt"><strong>Phone / WhatsApp</strong><span>+254 112 129 347</span></div></div>
+        <div class="citem"><div class="cico">📱</div><div class="ctxt"><strong>Phone / WhatsApp</strong><span>+254 799 278 741</span></div></div>
         <div class="citem"><div class="cico">📍</div><div class="ctxt"><strong>Location</strong><span>Nairobi, Kenya</span></div></div>
       </div>
     </div>
-    <form class="cf" onsubmit="hs(event)">
+    <form class="cf" action="https://formspree.io/f/mgolbzgj" method="POST" onsubmit="hs(event)">
       <div class="fr">
-        <div class="fg"><label>Your Name</label><input type="text" placeholder="" required/></div>
-        <div class="fg"><label>Business Name</label><input type="text" placeholder="" required/></div>
+        <div class="fg"><label>Your Name</label><input type="text" name="name" placeholder="" required/></div>
+        <div class="fg"><label>Business Name</label><input type="text" name="business" placeholder="" required/></div>
       </div>
-      <div class="fg"><label>Email Address</label><input type="email" placeholder="" required/></div>
+      <div class="fg"><label>Email Address</label><input type="email" name="email" placeholder="" required/></div>
       <div class="fg"><label>Which plan interests you?</label>
-        <select><option>Starter — KSh 4,999/mo</option><option selected>Growth — KSh 9,999/mo</option><option>Enterprise — Custom</option></select>
+        <select name="plan"><option>Starter — KSh 4,999/mo</option><option selected>Growth — KSh 9,999/mo</option><option>Enterprise — Custom</option></select>
       </div>
-      <div class="fg"><label>Tell us about your business</label><textarea placeholder="What does your business do? What problems do you want AI to solve?"></textarea></div>
+      <div class="fg"><label>Tell us about your business</label><textarea name="message" placeholder="What does your business do? What problems do you want AI to solve?"></textarea></div>
       <button type="submit" class="sbtn">Send Message →</button>
     </form>
   </div>
@@ -714,7 +714,7 @@ footer p { font-size: 0.8rem; color: var(--light); }
     <a href="#faq">FAQ</a>
     <a href="#contact">Contact</a>
   </div>
-  <p>© 2026 Winx Nairobi, Kenya</p>
+  <p>© 2026 Winx· Nairobi, Kenya</p>
 </footer>
 
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
@@ -755,11 +755,29 @@ function tf(el){
 }
 
 // Form submit
-function hs(e){
+async function hs(e){
   e.preventDefault();
   const b=e.target.querySelector('.sbtn');
-  b.textContent='✓ Sent!'; b.style.background='#16a34a';
-  setTimeout(()=>{ b.textContent='Send Message →'; b.style.background=''; e.target.reset(); },3000);
+  const form=e.target;
+  b.textContent='Sending...'; b.disabled=true;
+  try {
+    const res=await fetch('https://formspree.io/f/mgolbzgj',{
+      method:'POST',
+      body:new FormData(form),
+      headers:{Accept:'application/json'}
+    });
+    if(res.ok){
+      b.textContent='✓ Message Sent!'; b.style.background='#16a34a';
+      form.reset();
+      setTimeout(()=>{ b.textContent='Send Message →'; b.style.background=''; b.disabled=false; },4000);
+    } else {
+      b.textContent='Failed — Try Again'; b.style.background='#dc2626';
+      setTimeout(()=>{ b.textContent='Send Message →'; b.style.background=''; b.disabled=false; },3000);
+    }
+  } catch(err){
+    b.textContent='Failed — Try Again'; b.style.background='#dc2626';
+    setTimeout(()=>{ b.textContent='Send Message →'; b.style.background=''; b.disabled=false; },3000);
+  }
 }
 </script>
 
@@ -915,7 +933,7 @@ async function sendMessage(text){
     });
     const data=await res.json(); wRemoveTyping();
     if(data.content&&data.content[0]){wAddMessage('bot',data.content[0].text);}
-    else{wAddMessage('bot',"Sorry, having trouble right now. WhatsApp us at +254 799 278 741!");}
+    else{wAddMessage('bot',"Sorry, having trouble right now. WhatsApp us at +254 112 129 347!");}
   }catch(err){
     wRemoveTyping();
     wAddMessage('bot',"Connection issue! Reach us directly on WhatsApp: +254 799 278 741 or ceeddy492@gmail.com");
