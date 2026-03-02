@@ -168,12 +168,12 @@ nav.scrolled{padding:0.75rem 4rem;box-shadow:0 2px 24px rgba(26,107,255,0.08);}
 }
 .hero-img{
   width:100%;height:100%;object-fit:cover;
-  filter:brightness(0.75) saturate(1.1) blur(3px);
+  filter:brightness(0.85) saturate(1.2) blur(2px);
   transform:scale(1.05);
 }
 .hero-img-overlay{
   position:absolute;inset:0;
-  background:linear-gradient(160deg,rgba(26,107,255,0.35) 0%,rgba(10,15,30,0.55) 100%);
+  background:linear-gradient(160deg,rgba(26,107,255,0.25) 0%,rgba(10,15,30,0.35) 100%);
 }
 /* Big centered chat card */
 .hero-card{
@@ -256,7 +256,7 @@ section{padding:7rem 4rem;}
 .sv-bg{
   position:absolute;inset:0;width:100%;height:100%;
   object-fit:cover;object-position:center;
-  filter:brightness(0.28) saturate(0.8);
+  filter:brightness(0.45) saturate(1.0);
   z-index:0;
 }
 .sv-wrap{
@@ -271,13 +271,13 @@ section{padding:7rem 4rem;}
 .sv-left .section-label{color:rgba(255,255,255,0.4);}
 .sv-left .section-label::before{background:rgba(255,255,255,0.4);}
 .sv-left .section-title{font-size:clamp(2.2rem,3.5vw,3.5rem);color:white;}
-.sv-left .section-sub{max-width:320px;color:rgba(255,255,255,0.5);}
+.sv-left .section-sub{max-width:320px;color:rgba(255,255,255,0.75);}
 .sv-right{}
 .sv-item{
   padding:2.2rem 4rem;border-bottom:1px solid rgba(255,255,255,0.07);
   display:flex;align-items:flex-start;gap:1.4rem;
-  background:rgba(255,255,255,0.04);
-  backdrop-filter:blur(10px);
+  background:rgba(0,0,0,0.25);
+  backdrop-filter:blur(12px);
   transition:all 0.3s;cursor:default;
 }
 .sv-item:first-child{border-top:1px solid rgba(255,255,255,0.07);}
@@ -297,7 +297,7 @@ section{padding:7rem 4rem;}
   font-size:1.1rem;font-weight:600;letter-spacing:-0.3px;
   margin-bottom:0.5rem;transition:color 0.3s;color:white;
 }
-.sv-desc{font-size:0.9rem;color:rgba(255,255,255,0.45);line-height:1.75;transition:color 0.3s;}
+.sv-desc{font-size:0.9rem;color:rgba(255,255,255,0.65);line-height:1.75;transition:color 0.3s;}
 
 /* ── ABOUT / IMAGE SECTION ── */
 #about{
@@ -308,7 +308,7 @@ section{padding:7rem 4rem;}
 .about-img{width:100%;height:100%;object-fit:cover;min-height:500px;}
 .about-img-overlay{
   position:absolute;inset:0;
-  background:linear-gradient(135deg,rgba(26,107,255,0.3),rgba(10,15,30,0.2));
+  background:linear-gradient(135deg,rgba(26,107,255,0.2),rgba(10,15,30,0.1));
 }
 .about-content{
   padding:6rem 4rem;display:flex;
@@ -1090,7 +1090,7 @@ let wO=false,wT=false,wH=[],wQ=false;
 const wCfg={
   welcome:"Hey there! 👋 I'm Zana AI. I'm here to answer your questions and help you get started. What can I help you with today?",
   qr:["What services do you offer?","How much does it cost?","How do I get started?","Contact the team"],
-  sys:`You are Zana AI, a friendly and knowledgeable assistant for Zana AI — an AI automation agency based in Nairobi, Kenya. Help visitors understand what Zana AI does and guide them toward booking a consultation. About Zana AI: We build custom AI chatbots trained on client business data, workflow automation using n8n and Groq AI, WhatsApp and social media integration, AI strategy consulting. We are based in Nairobi Kenya and understand the local market. Pricing: Starter KSh 4,999/mo, Growth KSh 9,999/mo, Enterprise custom pricing. Contact: ceeddy492@gmail.com | +254 799 278 741. Tagline: Your Business. Always Working. Be warm, confident, and concise. Keep replies to 2-3 sentences max. Always end with a question or clear next step to keep the conversation going.`
+  sys:`You are Zana AI, a friendly and knowledgeable assistant for Zana AI — an AI automation agency based in Nairobi, Kenya. Help visitors understand what Zana AI does and guide them toward booking a consultation. About Zana AI: We build custom AI chatbots trained on client business data, workflow automation using n8n and Groq AI, WhatsApp and social media integration, AI strategy consulting. We are based in Nairobi Kenya and understand the local market. Pricing: Starter KSh 4,999/mo, Growth KSh 9,999/mo, Enterprise custom pricing. Contact: antiquevaultke@gmail.com | +254 799 278 741. Tagline: Your Business. Always Working. Be warm, confident, and concise. Keep replies to 2-3 sentences max. Always end with a question or clear next step to keep the conversation going.`
 };
 document.addEventListener('DOMContentLoaded',()=>{setTimeout(()=>{wAdd('bot',wCfg.welcome);setTimeout(wQR,600);},900);});
 function wQR(){
@@ -1145,7 +1145,7 @@ async function wSend(text){
     });
     const data=await res.json();wRmT();
     wAdd('bot',data.content&&data.content[0]?data.content[0].text:"Having trouble connecting. Reach us on WhatsApp: +254 799 278 741");
-  }catch{wRmT();wAdd('bot',"Connection issue! Contact us: +254 799 278 741 or ceeddy492@gmail.com");}
+  }catch{wRmT();wAdd('bot',"Connection issue! Contact us: +254 799 278 741 or antiquevaultke@gmail.com");}
   wT=false;document.getElementById('wsb').disabled=false;document.getElementById('wi').focus();
 }
 function wKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();wSend();}}
