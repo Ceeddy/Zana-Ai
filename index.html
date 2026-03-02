@@ -251,44 +251,53 @@ section{padding:7rem 4rem;}
 .section-sub{color:var(--muted);font-size:1rem;line-height:1.8;font-weight:400;margin-top:1rem;}
 
 /* ── SERVICES ── */
-#services{background:var(--white);padding:0;}
-.sv-wrap{display:grid;grid-template-columns:1fr 1fr;}
+#services{background:var(--white);padding:0;position:relative;}
+/* Full bleed background image behind whole services section */
+.sv-bg{
+  position:absolute;inset:0;width:100%;height:100%;
+  object-fit:cover;object-position:center;
+  filter:brightness(0.28) saturate(0.8);
+  z-index:0;
+}
+.sv-wrap{
+  display:grid;grid-template-columns:1fr 1fr;
+  position:relative;z-index:1;
+}
 .sv-left{
-  background:var(--blue-light);padding:7rem 4rem;
+  padding:7rem 4rem;
   display:flex;flex-direction:column;justify-content:center;
   position:sticky;top:68px;height:calc(100vh - 68px);
 }
-.sv-left .section-title{font-size:clamp(2.2rem,3.5vw,3.5rem);}
-.sv-left .section-sub{max-width:300px;}
-/* Real image in services */
-.sv-img{
-  width:100%;height:220px;object-fit:cover;
-  border-radius:14px;margin-top:2rem;
-  box-shadow:var(--shadow-blue);
-}
+.sv-left .section-label{color:rgba(255,255,255,0.4);}
+.sv-left .section-label::before{background:rgba(255,255,255,0.4);}
+.sv-left .section-title{font-size:clamp(2.2rem,3.5vw,3.5rem);color:white;}
+.sv-left .section-sub{max-width:320px;color:rgba(255,255,255,0.5);}
 .sv-right{}
 .sv-item{
-  padding:2.2rem 4rem;border-bottom:1px solid var(--border);
+  padding:2.2rem 4rem;border-bottom:1px solid rgba(255,255,255,0.07);
   display:flex;align-items:flex-start;gap:1.4rem;
-  background:white;transition:all 0.3s;cursor:default;
+  background:rgba(255,255,255,0.04);
+  backdrop-filter:blur(10px);
+  transition:all 0.3s;cursor:default;
 }
-.sv-item:first-child{border-top:1px solid var(--border);}
-.sv-item:hover{background:var(--ink);padding-left:4.5rem;}
+.sv-item:first-child{border-top:1px solid rgba(255,255,255,0.07);}
+.sv-item:hover{background:var(--blue);padding-left:4.5rem;}
 .sv-item:hover .sv-title{color:white;}
-.sv-item:hover .sv-desc{color:rgba(255,255,255,0.45);}
-.sv-item:hover .sv-ico{background:rgba(26,107,255,0.2);}
+.sv-item:hover .sv-desc{color:rgba(255,255,255,0.55);}
+.sv-item:hover .sv-ico{background:rgba(255,255,255,0.15);}
 .sv-ico{
   width:50px;height:50px;border-radius:12px;
-  background:var(--blue-light);display:flex;
-  align-items:center;justify-content:center;
+  background:rgba(255,255,255,0.1);
+  border:1px solid rgba(255,255,255,0.12);
+  display:flex;align-items:center;justify-content:center;
   font-size:1.3rem;flex-shrink:0;transition:all 0.3s;
 }
 .sv-title{
   font-family:'Clash Display','Plus Jakarta Sans',sans-serif;
   font-size:1.1rem;font-weight:600;letter-spacing:-0.3px;
-  margin-bottom:0.5rem;transition:color 0.3s;color:var(--ink);
+  margin-bottom:0.5rem;transition:color 0.3s;color:white;
 }
-.sv-desc{font-size:0.9rem;color:var(--muted);line-height:1.75;transition:color 0.3s;}
+.sv-desc{font-size:0.9rem;color:rgba(255,255,255,0.45);line-height:1.75;transition:color 0.3s;}
 
 /* ── ABOUT / IMAGE SECTION ── */
 #about{
@@ -611,7 +620,8 @@ footer p{font-size:0.75rem;color:rgba(255,255,255,0.12);}
   .sv-wrap{grid-template-columns:1fr;}
   .sv-left{position:relative;top:0;height:auto;padding:4rem 1.5rem;}
   .sv-item{padding:1.8rem 1.5rem;}
-  .sv-item:hover{padding-left:1.8rem;}
+  .sv-item:hover{padding-left:2.2rem;}
+  .sv-bg{position:absolute;}
   #about{grid-template-columns:1fr;}
   .about-img{min-height:300px;}
   .about-content{padding:4rem 1.5rem;}
@@ -723,7 +733,7 @@ footer p{font-size:0.75rem;color:rgba(255,255,255,0.12);}
   </div>
   <div class="hero-right">
     <!-- Real photo of African professional using tech -->
-    <img class="hero-img" src="https://images.pexels.com/photos/3184405/pexels-photo-3184405.jpeg?auto=compress&cs=tinysrgb&w=900&fit=crop&h=900" alt="Professional using AI tools"/>
+    <img class="hero-img" src="https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg?auto=compress&cs=tinysrgb&w=1200&fit=crop&h=1000" alt="Professional using AI tools"/>
     <div class="hero-img-overlay"></div>
     <!-- Floating badges -->
     <div class="fbadge fb1"><span class="fbi">⚡</span>Response in 0.3s</div>
@@ -768,12 +778,13 @@ footer p{font-size:0.75rem;color:rgba(255,255,255,0.12);}
 
 <!-- SERVICES -->
 <section id="services">
+  <!-- Full bleed African professionals background -->
+  <img class="sv-bg" src="https://images.pexels.com/photos/3184339/pexels-photo-3184339.jpeg?auto=compress&cs=tinysrgb&w=1400&fit=crop&h=900" alt="African professionals working"/>
   <div class="sv-wrap">
     <div class="sv-left">
       <div class="section-label reveal">What We Do</div>
       <div class="section-title reveal" style="transition-delay:0.1s;margin-top:0.8rem;font-size:clamp(2.2rem,3.5vw,3.2rem);">AI-Driven<br>Services</div>
       <p class="section-sub reveal" style="transition-delay:0.2s;max-width:300px;">Powerful solutions that free up your time and keep your business growing — even while you sleep.</p>
-      <img class="sv-img reveal" style="transition-delay:0.3s;" src="https://images.pexels.com/photos/7709287/pexels-photo-7709287.jpeg?auto=compress&cs=tinysrgb&w=600&fit=crop&h=500" alt="WhatsApp business automation"/>
     </div>
     <div class="sv-right">
       <div class="sv-item reveal"><div class="sv-ico">🤖</div><div><div class="sv-title">AI-Powered Chatbots</div><div class="sv-desc">Custom chatbots trained on your business data. They answer questions, handle bookings, and support your customers 24/7.</div></div></div>
@@ -787,7 +798,7 @@ footer p{font-size:0.75rem;color:rgba(255,255,255,0.12);}
 <!-- ABOUT / IMAGE SECTION -->
 <section id="about">
   <div class="about-img-wrap">
-    <img class="about-img" src="https://images.pexels.com/photos/3184338/pexels-photo-3184338.jpeg?auto=compress&cs=tinysrgb&w=900&fit=crop&h=700" alt="African business team working"/>
+    <img class="about-img" src="https://images.pexels.com/photos/7551442/pexels-photo-7551442.jpeg?auto=compress&cs=tinysrgb&w=900&fit=crop&h=700" alt="African business team working"/>
     <div class="about-img-overlay"></div>
   </div>
   <div class="about-content">
@@ -814,7 +825,7 @@ footer p{font-size:0.75rem;color:rgba(255,255,255,0.12);}
     </div>
     <div class="step-row">
       <div class="step-vis">
-        <img src="https://images.pexels.com/photos/7693218/pexels-photo-7693218.jpeg?auto=compress&cs=tinysrgb&w=700&fit=crop&h=500" alt="Discovery call"/>
+        <img src="https://images.pexels.com/photos/4065876/pexels-photo-4065876.jpeg?auto=compress&cs=tinysrgb&w=700&fit=crop&h=500" alt="Discovery call"/>
         <div class="step-vis-overlay"><div class="step-num-ghost">01</div><div class="step-ico">📞</div></div>
       </div>
       <div class="step-body reveal-r">
@@ -825,7 +836,7 @@ footer p{font-size:0.75rem;color:rgba(255,255,255,0.12);}
     </div>
     <div class="step-row">
       <div class="step-vis">
-        <img src="https://images.pexels.com/photos/5483077/pexels-photo-5483077.jpeg?auto=compress&cs=tinysrgb&w=700&fit=crop&h=500" alt="Building AI"/>
+        <img src="https://images.pexels.com/photos/4974912/pexels-photo-4974912.jpeg?auto=compress&cs=tinysrgb&w=700&fit=crop&h=500" alt="Building AI"/>
         <div class="step-vis-overlay"><div class="step-num-ghost">02</div><div class="step-ico">⚙️</div></div>
       </div>
       <div class="step-body reveal-l">
@@ -836,7 +847,7 @@ footer p{font-size:0.75rem;color:rgba(255,255,255,0.12);}
     </div>
     <div class="step-row">
       <div class="step-vis">
-        <img src="https://images.pexels.com/photos/3184418/pexels-photo-3184418.jpeg?auto=compress&cs=tinysrgb&w=700&fit=crop&h=500" alt="Launch and support"/>
+        <img src="https://images.pexels.com/photos/3184292/pexels-photo-3184292.jpeg?auto=compress&cs=tinysrgb&w=700&fit=crop&h=500" alt="Launch and support"/>
         <div class="step-vis-overlay"><div class="step-num-ghost">03</div><div class="step-ico">🚀</div></div>
       </div>
       <div class="step-body reveal-r">
