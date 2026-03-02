@@ -168,28 +168,33 @@ nav.scrolled{padding:0.75rem 4rem;box-shadow:0 2px 24px rgba(26,107,255,0.08);}
 }
 .hero-img{
   width:100%;height:100%;object-fit:cover;
-  filter:brightness(0.9) saturate(1.1);
+  filter:brightness(0.75) saturate(1.1) blur(3px);
+  transform:scale(1.05);
 }
 .hero-img-overlay{
   position:absolute;inset:0;
-  background:linear-gradient(135deg,rgba(26,107,255,0.2) 0%,rgba(10,15,30,0.1) 100%);
+  background:linear-gradient(160deg,rgba(26,107,255,0.35) 0%,rgba(10,15,30,0.55) 100%);
 }
-/* Floating card on image */
+/* Big centered chat card */
 .hero-card{
-  position:absolute;bottom:2.5rem;left:2.5rem;right:2.5rem;
-  background:rgba(255,255,255,0.95);backdrop-filter:blur(20px);
-  border-radius:16px;padding:1.4rem 1.6rem;
-  box-shadow:0 20px 50px rgba(10,15,30,0.2);
-  border:1px solid rgba(255,255,255,0.8);
+  position:absolute;
+  top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  width:88%;max-width:420px;
+  background:rgba(255,255,255,0.97);backdrop-filter:blur(24px);
+  border-radius:20px;padding:1.8rem 2rem;
+  box-shadow:0 30px 70px rgba(10,15,30,0.35),0 0 0 1px rgba(255,255,255,0.6);
+  border:1px solid rgba(255,255,255,0.9);
 }
 .hc-top{display:flex;align-items:center;gap:0.8rem;margin-bottom:1rem;}
 .hc-avatar{
-  width:40px;height:40px;border-radius:50%;
+  width:46px;height:46px;border-radius:50%;
   background:linear-gradient(135deg,var(--blue),var(--blue-dark));
   display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  box-shadow:0 4px 12px rgba(26,107,255,0.3);
 }
-.hc-avatar svg{width:18px;height:18px;fill:white;}
-.hc-name{font-weight:700;font-size:0.9rem;color:var(--ink);}
+.hc-avatar svg{width:22px;height:22px;fill:white;}
+.hc-name{font-weight:700;font-size:1rem;color:var(--ink);}
 .hc-status{display:flex;align-items:center;gap:0.4rem;margin-top:0.15rem;}
 .hc-dot{width:6px;height:6px;border-radius:50%;background:#22c55e;animation:hcPulse 2s infinite;}
 @keyframes hcPulse{0%,100%{box-shadow:0 0 0 0 rgba(34,197,94,0.4)}50%{box-shadow:0 0 0 4px rgba(34,197,94,0)}}
@@ -198,8 +203,8 @@ nav.scrolled{padding:0.75rem 4rem;box-shadow:0 2px 24px rgba(26,107,255,0.08);}
 .hc-msg{display:flex;gap:0.5rem;align-items:flex-end;}
 .hc-msg.u{flex-direction:row-reverse;}
 .hc-bub{
-  max-width:80%;padding:0.55rem 0.85rem;
-  border-radius:10px;font-size:0.78rem;line-height:1.5;
+  max-width:82%;padding:0.7rem 1rem;
+  border-radius:12px;font-size:0.88rem;line-height:1.6;
 }
 .hc-msg.b .hc-bub{background:var(--blue-light);color:var(--ink);border-radius:3px 10px 10px 10px;}
 .hc-msg.u .hc-bub{background:var(--blue);color:white;border-radius:10px 3px 10px 10px;}
@@ -213,8 +218,8 @@ nav.scrolled{padding:0.75rem 4rem;box-shadow:0 2px 24px rgba(26,107,255,0.08);}
   display:flex;align-items:center;gap:0.6rem;
   font-size:0.75rem;font-weight:600;color:var(--ink);z-index:2;
 }
-.fb1{top:2rem;right:2rem;animation:fbFloat 4s ease-in-out infinite;}
-.fb2{top:2rem;left:2rem;animation:fbFloat 4s 2s ease-in-out infinite;}
+.fb1{top:1.8rem;right:1.8rem;animation:fbFloat 4s ease-in-out infinite;}
+.fb2{bottom:1.8rem;left:1.8rem;animation:fbFloat 4s 2s ease-in-out infinite;}
 @keyframes fbFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
 .fbi{font-size:1rem;}
 
@@ -730,9 +735,10 @@ footer p{font-size:0.75rem;color:rgba(255,255,255,0.12);}
         <div><div class="hc-name">Zana AI · Active</div><div class="hc-status"><div class="hc-dot"></div><div class="hc-st">Replies instantly</div></div></div>
       </div>
       <div class="hc-msgs">
-        <div class="hc-msg b"><div class="hc-av">AI</div><div class="hc-bub">Hi! Welcome to Mama Pima Boutique. How can I help you? 👗</div></div>
+        <div class="hc-msg b"><div class="hc-av">AI</div><div class="hc-bub">Hi! 👋 Welcome to Mama Pima Boutique. How can I help you today?</div></div>
         <div class="hc-msg u"><div class="hc-av">U</div><div class="hc-bub">Do you have dresses in size 12?</div></div>
-        <div class="hc-msg b"><div class="hc-av">AI</div><div class="hc-bub">Yes! 14 dresses from KSh 1,800 — want to see the latest? 🛍️</div></div>
+        <div class="hc-msg b"><div class="hc-av">AI</div><div class="hc-bub">Yes! We have 14 dresses in size 12 from KSh 1,800. Want to see the latest arrivals? 🛍️</div></div>
+        <div class="hc-msg u"><div class="hc-av">U</div><div class="hc-bub">Yes please! 😊</div></div>
       </div>
     </div>
   </div>
@@ -1129,4 +1135,10 @@ async function wSend(text){
     const data=await res.json();wRmT();
     wAdd('bot',data.content&&data.content[0]?data.content[0].text:"Having trouble connecting. Reach us on WhatsApp: +254 799 278 741");
   }catch{wRmT();wAdd('bot',"Connection issue! Contact us: +254 799 278 741 or ceeddy492@gmail.com");}
-  wT=false;document.getElementById('wsb').disabled=false;document.ge
+  wT=false;document.getElementById('wsb').disabled=false;document.getElementById('wi').focus();
+}
+function wKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();wSend();}}
+function wRes(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,100)+'px';}
+</script>
+</body>
+</html>
