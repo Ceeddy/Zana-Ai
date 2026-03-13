@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+<title>Live Demo — Zana AI</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --wa-green:#25D366;
+  --wa-dark:#075E54;
+  --wa-teal:#128C7E;
+  --wa-bubble:#DCF8C6;
+  --wa-bg:#ECE5DD;
+  --wa-header:#075E54;
+  --wa-sent:#DCF8C6;
+  --wa-received:#FFFFFF;
+  --ink:#111;
+  --muted:#667781;
+  --border:#E0E0E0;
+  --blue:#1A6BFF;
+}
+html,body{height:100%;font-family:'DM Sans',sans-serif;background:#F0F2F5;overflow:hidden;}
+
+/* ── SELECTOR SCREEN ── */
+#selector{
+  position:fixed;inset:0;
+  background:linear-gradient(160deg,#0A1A4A 0%,#0F4FCC 60%,#1A6BFF 100%);
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  padding:2rem 1.5rem;
+  z-index:100;
+  transition:opacity 0.4s, transform 0.4s;
+}
+#selector.hide{opacity:0;transform:scale(0.97);pointer-events:none;}
+
+.sel-logo{
+  display:flex;align-items:center;gap:0.7rem;
+  margin-bottom:0.6rem;
+}
+.sel-logo-icon{
+  width:44px;height:44px;border-radius:12px;
+  background:rgba(255,255,255,0.15);
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.3rem;
+  border:1px solid rgba(255,255,255,0.2);
+}
+.sel-logo-name{
+  font-size:1.4rem;font-weight:700;color:white;letter-spacing:-0.5px;
+}
+.sel-title{
+  font-size:1.5rem;font-weight:700;color:white;
+  text-align:center;margin-bottom:0.5rem;letter-spacing:-0.3px;
+}
+.sel-sub{
+  font-size:0.85rem;color:rgba(255,255,255,0.65);
+  text-align:center;margin-bottom:2rem;line-height:1.5;
+}
+.sel-sub strong{color:rgba(255,255,255,0.9);}
+
+.industries{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:0.75rem;width:100%;max-width:380px;
+}
+.ind-card{
+  background:rgba(255,255,255,0.08);
+  border:1px solid rgba(255,255,255,0.15);
+  border-radius:16px;padding:1.1rem 1rem;
+  cursor:pointer;transition:all 0.2s;
+  display:flex;flex-direction:column;align-items:flex-start;gap:0.4rem;
+  backdrop-filter:blur(10px);
+}
+.ind-card:hover,.ind-card:active{
+  background:rgba(255,255,255,0.18);
+  border-color:rgba(255,255,255,0.4);
+  transform:translateY(-2px);
+}
+.ind-emoji{font-size:1.6rem;}
+.ind-name{font-size:0.82rem;font-weight:600;color:white;line-height:1.2;}
+.ind-desc{font-size:0.68rem;color:rgba(255,255,255,0.55);line-height:1.3;}
+
+.sel-footer{
+  margin-top:1.5rem;
+  font-size:0.65rem;color:rgba(255,255,255,0.4);
+  text-align:center;
+}
+.sel-footer strong{color:var(--wa-green);}
+
+/* ── WHATSAPP UI ── */
+#wa-screen{
+  position:fixed;inset:0;
+  display:flex;flex-direction:column;
+  max-width:480px;margin:0 auto;
+  background:var(--wa-bg);
+  opacity:0;pointer-events:none;
+  transition:opacity 0.4s;
+}
+#wa-screen.show{opacity:1;pointer-events:all;}
+
+/* WA Header */
+.wa-header{
+  background:var(--wa-header);
+  padding:0.6rem 1rem;
+  display:flex;align-items:center;gap:0.8rem;
+  flex-shrink:0;
+  padding-top:max(0.6rem, env(safe-area-inset-top));
+}
+.wa-back{
+  color:white;font-size:1.3rem;cursor:pointer;
+  background:none;border:none;padding:0.2rem;
+  opacity:0.9;
+}
+.wa-avatar{
+  width:38px;height:38px;border-radius:50%;
+  background:rgba(255,255,255,0.2);
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.2rem;flex-shrink:0;
+  border:2px solid rgba(255,255,255,0.3);
+}
+.wa-info{flex:1;}
+.wa-name{font-size:0.95rem;font-weight:600;color:white;line-height:1.2;}
+.wa-status{
+  font-size:0.68rem;color:rgba(255,255,255,0.75);
+  display:flex;align-items:center;gap:0.3rem;
+}
+.wa-status-dot{
+  width:5px;height:5px;border-radius:50%;
+  background:#4ade80;display:inline-block;
+}
+.wa-actions{display:flex;gap:1rem;}
+.wa-action-btn{background:none;border:none;color:rgba(255,255,255,0.85);font-size:1.1rem;cursor:pointer;}
+
+/* WA Background pattern */
+.wa-bg-pattern{
+  position:absolute;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23000000' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  pointer-events:none;z-index:0;
+}
+
+/* WA Messages */
+.wa-msgs{
+  flex:1;overflow-y:auto;
+  padding:0.8rem 0.8rem 0.5rem;
+  display:flex;flex-direction:column;gap:0.4rem;
+  position:relative;z-index:1;
+  scroll-behavior:smooth;
+}
+.wa-msgs::-webkit-scrollbar{width:0;}
+
+/* Date chip */
+.date-chip{
+  align-self:center;
+  background:rgba(255,255,255,0.85);
+  border-radius:8px;padding:0.25rem 0.75rem;
+  font-size:0.68rem;color:var(--muted);
+  font-weight:500;margin:0.4rem 0;
+  box-shadow:0 1px 2px rgba(0,0,0,0.08);
+}
+
+.wa-msg{
+  display:flex;flex-direction:column;
+  animation:waIn 0.3s cubic-bezier(0.34,1.4,0.64,1) both;
+  max-width:82%;
+}
+@keyframes waIn{from{opacity:0;transform:scale(0.94) translateY(8px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.wa-msg.sent{align-self:flex-end;align-items:flex-end;}
+.wa-msg.received{align-self:flex-start;align-items:flex-start;}
+
+.wa-bubble{
+  padding:0.5rem 0.75rem 0.3rem;
+  border-radius:8px;
+  font-size:0.88rem;line-height:1.55;
+  word-wrap:break-word;
+  position:relative;
+  box-shadow:0 1px 2px rgba(0,0,0,0.1);
+}
+.wa-msg.sent .wa-bubble{
+  background:var(--wa-sent);
+  border-radius:8px 2px 8px 8px;
+  color:#111;
+}
+.wa-msg.received .wa-bubble{
+  background:var(--wa-received);
+  border-radius:2px 8px 8px 8px;
+  color:#111;
+}
+
+/* Tail for bubbles */
+.wa-msg.sent .wa-bubble::after{
+  content:'';position:absolute;top:0;right:-7px;
+  width:0;height:0;
+  border-left:8px solid var(--wa-sent);
+  border-top:0px solid transparent;
+  border-bottom:8px solid transparent;
+}
+.wa-msg.received .wa-bubble::after{
+  content:'';position:absolute;top:0;left:-7px;
+  width:0;height:0;
+  border-right:8px solid var(--wa-received);
+  border-top:0px solid transparent;
+  border-bottom:8px solid transparent;
+}
+
+.wa-meta{
+  display:flex;align-items:center;gap:0.3rem;
+  padding:0 0.2rem;margin-top:0.15rem;
+}
+.wa-time{font-size:0.62rem;color:var(--muted);}
+.wa-ticks{font-size:0.7rem;color:#53BDEB;}
+
+/* Typing */
+.wa-typing .wa-bubble{
+  padding:0.6rem 0.9rem;
+  display:flex;gap:4px;align-items:center;
+}
+.wa-typing .wa-bubble span{
+  width:7px;height:7px;border-radius:50%;
+  background:#90A4AE;
+  animation:watyp 1.2s infinite;
+}
+.wa-typing .wa-bubble span:nth-child(2){animation-delay:0.15s;}
+.wa-typing .wa-bubble span:nth-child(3){animation-delay:0.3s;}
+@keyframes watyp{0%,60%,100%{transform:translateY(0);opacity:0.4}30%{transform:translateY(-5px);opacity:1}}
+
+/* Quick replies */
+.wa-qr-wrap{
+  padding:0.4rem 0.8rem;
+  display:flex;gap:0.4rem;flex-wrap:wrap;
+  position:relative;z-index:1;flex-shrink:0;
+}
+.wa-qr{
+  background:white;
+  border:1.5px solid var(--wa-teal);
+  color:var(--wa-teal);
+  padding:0.38rem 0.85rem;
+  border-radius:100px;
+  font-size:0.75rem;font-weight:500;
+  font-family:'DM Sans',sans-serif;
+  cursor:pointer;transition:all 0.15s;
+  white-space:nowrap;
+  box-shadow:0 1px 3px rgba(0,0,0,0.08);
+}
+.wa-qr:hover{background:var(--wa-teal);color:white;}
+
+/* Input */
+.wa-input-row{
+  padding:0.5rem 0.6rem;
+  display:flex;align-items:flex-end;gap:0.5rem;
+  background:#F0F2F5;
+  flex-shrink:0;position:relative;z-index:1;
+  padding-bottom:max(0.5rem, env(safe-area-inset-bottom));
+}
+.wa-input-box{
+  flex:1;display:flex;align-items:flex-end;
+  background:white;border-radius:24px;
+  padding:0.55rem 1rem;
+  box-shadow:0 1px 3px rgba(0,0,0,0.1);
+  gap:0.5rem;
+}
+.wa-emoji-btn{
+  background:none;border:none;font-size:1.2rem;
+  cursor:pointer;opacity:0.6;flex-shrink:0;
+}
+#inp{
+  flex:1;background:transparent;border:none;outline:none;
+  font-family:'DM Sans',sans-serif;font-size:0.9rem;
+  color:var(--ink);resize:none;line-height:1.5;max-height:90px;
+}
+#inp::placeholder{color:#AAB8C2;}
+.wa-send-btn{
+  width:44px;height:44px;flex-shrink:0;
+  background:var(--wa-teal);border:none;
+  border-radius:50%;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:all 0.15s;
+  box-shadow:0 2px 8px rgba(18,140,126,0.35);
+}
+.wa-send-btn:hover{background:var(--wa-dark);transform:scale(1.05);}
+.wa-send-btn:disabled{background:#ccc;cursor:not-allowed;transform:none;box-shadow:none;}
+.wa-send-btn svg{width:18px;height:18px;fill:white;}
+
+/* Zana badge */
+.zana-bar{
+  background:white;
+  border-top:1px solid var(--border);
+  padding:0.35rem;text-align:center;
+  flex-shrink:0;position:relative;z-index:1;
+}
+.zana-bar-txt{font-size:0.6rem;color:#AAB8C2;}
+.zana-bar-txt strong{color:var(--blue);font-weight:600;}
+</style>
+</head>
+<body>
+
+<!-- ── INDUSTRY SELECTOR ── -->
+<div id="selector">
+  <div class="sel-logo">
+    <div class="sel-logo-icon">⚡</div>
+    <div class="sel-logo-name">Zana AI</div>
+  </div>
+  <div class="sel-title">Try a Live Demo</div>
+  <div class="sel-sub">Pick your industry and chat with an AI assistant <strong>trained for your business</strong></div>
+
+  <div class="industries">
+    <div class="ind-card" onclick="startDemo('restaurant')">
+      <div class="ind-emoji">🍽️</div>
+      <div class="ind-name">Restaurant & Food</div>
+      <div class="ind-desc">Menus, reservations, delivery</div>
+    </div>
+    <div class="ind-card" onclick="startDemo('boutique')">
+      <div class="ind-emoji">🛍️</div>
+      <div class="ind-name">Boutique & Retail</div>
+      <div class="ind-desc">Products, prices, orders</div>
+    </div>
+    <div class="ind-card" onclick="startDemo('realestate')">
+      <div class="ind-emoji">🏠</div>
+      <div class="ind-name">Real Estate</div>
+      <div class="ind-desc">Listings, viewings, leads</div>
+    </div>
+    <div class="ind-card" onclick="startDemo('school')">
+      <div class="ind-emoji">🏫</div>
+      <div class="ind-name">School & Tutoring</div>
+      <div class="ind-desc">Enrollment, fees, schedules</div>
+    </div>
+    <div class="ind-card" style="grid-column:span 2" onclick="startDemo('clinic')">
+      <div class="ind-emoji">💊</div>
+      <div class="ind-name">Clinic & Pharmacy</div>
+      <div class="ind-desc">Appointments, FAQs, reminders</div>
+    </div>
+  </div>
+
+  <div class="sel-footer">Powered by <strong>⚡ Zana AI</strong> · Your Business. Always Working.</div>
+</div>
+
+<!-- ── WHATSAPP SCREEN ── -->
+<div id="wa-screen">
+  <div class="wa-bg-pattern"></div>
+
+  <!-- Header -->
+  <div class="wa-header">
+    <button class="wa-back" onclick="goBack()">←</button>
+    <div class="wa-avatar" id="wa-avatar">🍽️</div>
+    <div class="wa-info">
+      <div class="wa-name" id="wa-name">Demo Business</div>
+      <div class="wa-status"><span class="wa-status-dot"></span> online</div>
+    </div>
+    <div class="wa-actions">
+      <button class="wa-action-btn">📞</button>
+      <button class="wa-action-btn">⋮</button>
+    </div>
+  </div>
+
+  <!-- Messages -->
+  <div class="wa-msgs" id="msgs">
+    <div class="date-chip">Today</div>
+  </div>
+
+  <!-- Quick replies -->
+  <div class="wa-qr-wrap" id="qr"></div>
+
+  <!-- Input -->
+  <div class="wa-input-row">
+    <div class="wa-input-box">
+      <button class="wa-emoji-btn">😊</button>
+      <textarea id="inp" rows="1" placeholder="Type a message" onkeydown="onKey(event)" oninput="resize(this)"></textarea>
+    </div>
+    <button class="wa-send-btn" id="send" onclick="send()">
+      <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+    </button>
+  </div>
+
+  <!-- Zana bar -->
+  <div class="zana-bar">
+    <div class="zana-bar-txt">Demo by <strong>⚡ Zana AI</strong> · zanaai.co.ke · This is what your customers would experience</div>
+  </div>
+</div>
+
+<script>
+const INDUSTRIES = {
+  restaurant:{
+    name:"Mama's Kitchen 🍽️",
+    avatar:"🍽️",
+    qr:["See the menu 🍛","Do you deliver? 🚚","Book a table 📅","Opening hours ⏰"],
+    greeting:"Habari! 👋 Welcome to Mama's Kitchen. We serve delicious local and continental dishes right here in Nairobi. How can I help you today?",
+    system:`You are the AI assistant for Mama's Kitchen, a popular restaurant in Nairobi, Kenya.
+Menu highlights: Nyama Choma KSh 800, Ugali & Sukuma KSh 250, Pilau KSh 400, Chips Kuku KSh 500, Grilled Fish KSh 650. Drinks from KSh 100.
+Hours: Mon-Sun 7am-10pm. Located in Westlands, Nairobi.
+Delivery: Within Nairobi, orders above KSh 500. 30-45min delivery time.
+Reservations: Available for groups of 4+, call or WhatsApp to book.
+Style: Warm, friendly, natural Kenyan English. 2-3 sentences max. Use emojis naturally.`
+  },
+  boutique:{
+    name:"Styles by Wanjiru 🛍️",
+    avatar:"🛍️",
+    qr:["Latest arrivals? ✨","Dress prices? 👗","Do you deliver? 🚚","What sizes? 📏"],
+    greeting:"Habari! 👋 Welcome to Styles by Wanjiru — Nairobi's favourite boutique for trendy fashion. What are you looking for today?",
+    system:`You are the AI assistant for Styles by Wanjiru, a trendy fashion boutique in Nairobi CBD, Kenya.
+Products: Dresses KSh 2,500-8,000 | Tops KSh 1,200-3,500 | Jeans KSh 2,000-5,000 | Shoes KSh 3,000-7,000 | Accessories KSh 500-2,000.
+Sizes: XS to 3XL available. Custom orders welcome.
+Delivery: Nationwide. Nairobi same-day delivery available.
+Hours: Mon-Sat 8am-7pm, Sun 10am-4pm.
+Style: Trendy, friendly, natural Kenyan English. 2-3 sentences max. Use emojis naturally.`
+  },
+  realestate:{
+    name:"Nairobi Homes 🏠",
+    avatar:"🏠",
+    qr:["Available listings? 🏘️","2-bed prices? 💰","Book a viewing 📅","Which areas? 📍"],
+    greeting:"Habari! 👋 Welcome to Nairobi Homes — your trusted real estate partner in Kenya. Looking to buy, rent or sell? I can help! 🏡",
+    system:`You are the AI assistant for Nairobi Homes, a real estate agency in Nairobi, Kenya.
+Listings: 1-bed apartments from KSh 15,000/month | 2-bed from KSh 25,000/month | 3-bed from KSh 45,000/month | For sale from KSh 4.5M.
+Areas covered: Westlands, Kilimani, Lavington, Karen, Kasarani, Ruaka, Thika Road, Syokimau.
+Services: Rentals, sales, property management, valuations.
+Viewings: Book via WhatsApp, available Mon-Sat 8am-5pm.
+Style: Professional but warm, natural Kenyan English. 2-3 sentences max. Always ask for their budget and preferred area.`
+  },
+  school:{
+    name:"Bright Minds Academy 🏫",
+    avatar:"🏫",
+    qr:["School fees? 💰","How to enroll? 📝","What grades? 🎓","Term dates? 📅"],
+    greeting:"Habari! 👋 Welcome to Bright Minds Academy. We provide quality education from PP1 to Form 4. How can I help you today?",
+    system:`You are the AI assistant for Bright Minds Academy, a private school in Nairobi, Kenya.
+Levels: Pre-Primary (PP1-PP2), Primary (Grade 1-6), Junior Secondary (Grade 7-9), Senior Secondary (Form 1-4).
+Fees: Pre-Primary KSh 25,000/term | Primary KSh 35,000/term | Secondary KSh 55,000/term. Includes meals and books.
+Enrollment: Open for 2026 intake. Bring birth certificate, report book and passport photos.
+Term dates: Term 1 Jan-April | Term 2 May-Aug | Term 3 Sep-Nov.
+Location: Nairobi, Kileleshwa. School bus available.
+Style: Professional, reassuring, natural Kenyan English. 2-3 sentences max. Always guide parents to next step.`
+  },
+  clinic:{
+    name:"HealthFirst Clinic 💊",
+    avatar:"💊",
+    qr:["Book appointment 📅","Consultation fees? 💰","Opening hours ⏰","Services offered? 🏥"],
+    greeting:"Habari! 👋 Welcome to HealthFirst Clinic. We're here to keep you and your family healthy. How can I assist you today?",
+    system:`You are the AI assistant for HealthFirst Clinic, a modern clinic in Nairobi, Kenya.
+Services: General consultation, dental, eye care, lab tests, pharmacy, maternity, pediatrics.
+Fees: General consultation KSh 1,500 | Dental from KSh 2,000 | Lab tests from KSh 500 | Pharmacy available.
+Hours: Mon-Fri 7am-8pm | Sat 8am-5pm | Sun 9am-2pm. 24hr emergency line available.
+Location: Nairobi, Upperhill. Parking available.
+Insurance: NHIF, AAR, Jubilee, Resolution, Madison accepted.
+Appointments: Book via WhatsApp or call. Walk-ins welcome but appointments prioritised.
+Style: Warm, professional, reassuring. Natural Kenyan English. 2-3 sentences max. Always recommend booking an appointment.`
+  }
+};
+
+let currentIndustry = null;
+let history = [];
+let busy = false;
+
+function startDemo(industry) {
+  currentIndustry = INDUSTRIES[industry];
+  history = [];
+
+  // Update header
+  document.getElementById('wa-avatar').textContent = currentIndustry.avatar;
+  document.getElementById('wa-name').textContent = currentIndustry.name;
+
+  // Clear messages
+  const msgs = document.getElementById('msgs');
+  msgs.innerHTML = '<div class="date-chip">Today</div>';
+  document.getElementById('qr').innerHTML = '';
+
+  // Show WA screen
+  document.getElementById('selector').classList.add('hide');
+  document.getElementById('wa-screen').classList.add('show');
+
+  // Greeting
+  setTimeout(() => {
+    showTyping();
+    setTimeout(() => {
+      removeTyping();
+      addMsg('received', currentIndustry.greeting);
+      setTimeout(() => showQR(), 400);
+    }, 1200);
+  }, 400);
+}
+
+function goBack() {
+  document.getElementById('selector').classList.remove('hide');
+  document.getElementById('wa-screen').classList.remove('show');
+  currentIndustry = null;
+  history = [];
+}
+
+function showQR() {
+  const el = document.getElementById('qr');
+  el.innerHTML = '';
+  currentIndustry.qr.forEach(q => {
+    const b = document.createElement('button');
+    b.className = 'wa-qr';
+    b.textContent = q;
+    b.onclick = () => { el.innerHTML = ''; send(q); };
+    el.appendChild(b);
+  });
+}
+
+function addMsg(type, text) {
+  const msgs = document.getElementById('msgs');
+  const w = document.createElement('div');
+  w.className = `wa-msg ${type}`;
+
+  const bub = document.createElement('div');
+  bub.className = 'wa-bubble';
+  bub.textContent = text;
+
+  const meta = document.createElement('div');
+  meta.className = 'wa-meta';
+  const now = new Date();
+  const time = now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0');
+  meta.innerHTML = `<span class="wa-time">${time}</span>${type === 'sent' ? '<span class="wa-ticks">✓✓</span>' : ''}`;
+
+  w.appendChild(bub);
+  w.appendChild(meta);
+  msgs.appendChild(w);
+  msgs.scrollTop = msgs.scrollHeight;
+
+  const role = type === 'sent' ? 'user' : 'assistant';
+  history.push({ role, content: text });
+}
+
+function showTyping() {
+  const msgs = document.getElementById('msgs');
+  const w = document.createElement('div');
+  w.className = 'wa-msg received wa-typing'; w.id = 'typ';
+  const bub = document.createElement('div');
+  bub.className = 'wa-bubble';
+  bub.innerHTML = '<span></span><span></span><span></span>';
+  w.appendChild(bub);
+  msgs.appendChild(w);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function removeTyping() {
+  const el = document.getElementById('typ');
+  if (el) el.remove();
+}
+
+async function send(text) {
+  const inp = document.getElementById('inp');
+  const msg = text || inp.value.trim();
+  if (!msg || busy || !currentIndustry) return;
+  inp.value = ''; resize(inp);
+  document.getElementById('qr').innerHTML = '';
+  addMsg('sent', msg);
+  busy = true;
+  document.getElementById('send').disabled = true;
+  showTyping();
+
+  try {
+    const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer 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'
+      },
+      body: JSON.stringify({
+        model: 'llama-3.1-8b-instant',
+        max_tokens: 300,
+        messages: [
+          { role: 'system', content: currentIndustry.system },
+          ...history.slice(-10)
+        ]
+      })
+    });
+    const data = await res.json();
+    removeTyping();
+    const reply = data.choices?.[0]?.message?.content || "Asante! Please contact us directly for assistance 😊";
+    addMsg('received', reply);
+  } catch {
+    removeTyping();
+    addMsg('received', "Connection issue. Please try again 📱");
+  }
+
+  busy = false;
+  document.getElementById('send').disabled = false;
+  document.getElementById('inp').focus();
+  showQR();
+}
+
+function onKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); }
+}
+
+function resize(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 90) + 'px';
+}
+</script>
+</body>
+</html>
